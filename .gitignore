@@ -1,0 +1,5 @@
+sim/*_sim
+sim/*_check
+sim/*.vcd
+__pycache__/
+*.pyc
