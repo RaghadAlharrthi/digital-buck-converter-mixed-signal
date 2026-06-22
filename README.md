@@ -69,3 +69,15 @@ rtl/ Verilog design. tb/ testbenches. sim/ vcd output. images/ digital waveform.
 
 ## Tools
 Digital: iverilog, GTKWave, Verilog-2001. Analog: ngspice 45.2, Python (numpy, matplotlib).
+
+## Frequency-domain analysis (Bode)
+
+The control-to-output transfer function Gvd(s) = Vin / (LC s^2 + (L/R)s + 1) was computed in Python. LC resonance f0 = 5033 Hz, quality factor Q = 10.4. The sharp resonant peak and steep phase drop explain the startup ringing seen in the time-domain plots.
+
+![Bode plot of Gvd(s)](analog/plots/bode_plot.png)
+
+## Transistor-level error amplifier
+
+The behavioral error amplifier was also built at transistor level: a classic 5-transistor OTA (NMOS differential pair + PMOS current-mirror load + tail current source) using generic MOSFET models. Measured gain ~31x; output falls as feedback rises, giving the same negative-feedback direction as the behavioral block.
+
+![Transistor-level OTA transfer curve](analog/plots/ota_plot.png)
