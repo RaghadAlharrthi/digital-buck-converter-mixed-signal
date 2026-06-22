@@ -1,0 +1,42 @@
+* Transistor-level 5-transistor OTA (error amplifier)
+* Differential pair (M1,M2) + current mirror load (M3,M4) + tail source (M5)
+* Generic MOSFET models - no PDK needed
+
+.param VDD=5
+.param Vcm=2.5       ; common-mode input level
+.param Ibias=20u
+
+Vdd vdd 0 DC {VDD}
+
+* --- Inputs: vref fixed, vfb swept around it ---
+Vref vref 0 DC {Vcm}
+Vfb  vfb  0 DC {Vcm}
+
+* --- Differential pair (NMOS): M1 takes vref, M2 takes vfb ---
+* drain gate source bulk  model
+M1 outb vref tail 0 NMOS W=20u L=1u
+M2 out  vfb  tail 0 NMOS W=20u L=1u
+
+* --- Current mirror load (PMOS): M3 diode-connected, M4 mirrors ---
+M3 outb outb vdd vdd PMOS W=40u L=1u
+M4 out  outb vdd vdd PMOS W=40u L=1u
+
+* --- Tail current source (NMOS biased by Vb) ---
+M5 tail vb 0 0 NMOS W=40u L=1u
+Vb vb 0 DC 1.0
+
+* --- Generic transistor models ---
+.model NMOS NMOS (LEVEL=1 VTO=0.7 KP=120u LAMBDA=0.01)
+.model PMOS PMOS (LEVEL=1 VTO=-0.7 KP=40u LAMBDA=0.01)
+
+* --- Sweep vfb finely around the common-mode point ---
+.dc Vfb 2.40 2.60 0.001
+
+.control
+run
+meas dc out_at_low FIND v(out) AT=2.45
+meas dc out_at_high FIND v(out) AT=2.55
+wrdata ota_sweep.txt v(out)
+.endc
+
+.end
