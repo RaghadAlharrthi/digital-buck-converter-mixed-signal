@@ -1,0 +1,17 @@
+* OTA from Xschem schematic netlist - with data output
+.lib /home/raghad/.volare/sky130A/libs.tech/combined/sky130.lib.spice tt
+XM1 net2 net5 net1 net1 sky130_fd_pr__nfet_01v8 L=0.5 W=4 nf=1
+XM2 net3 net6 net1 net1 sky130_fd_pr__nfet_01v8 L=0.5 W=4 nf=1
+XM3 net2 net2 net4 net4 sky130_fd_pr__pfet_01v8 L=0.5 W=8 nf=1
+XM4 net3 net2 net4 net4 sky130_fd_pr__pfet_01v8 L=0.5 W=8 nf=1
+XM5 net1 net7 0 0 sky130_fd_pr__nfet_01v8 L=0.5 W=8 nf=1
+VDD net4 0 1.8
+vref net5 0 0.9
+vfb net6 0 DC 0.9
+Vbias net7 0 0.8
+.dc vfb 0.85 0.95 0.0005
+.control
+run
+wrdata sky130/schematic_ota_sweep.txt v(net3)
+.endc
+.end
