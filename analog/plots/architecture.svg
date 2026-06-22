@@ -1,0 +1,53 @@
+<svg viewBox="0 0 980 420" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#5b21b6"/>
+    </marker>
+    <linearGradient id="block" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#faf5ff"/>
+      <stop offset="1" stop-color="#f3e8ff"/>
+    </linearGradient>
+    <linearGradient id="power" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff7ed"/>
+      <stop offset="1" stop-color="#ffedd5"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="980" height="420" fill="#ffffff"/>
+  <text x="490" y="36" text-anchor="middle" font-size="20" font-weight="700" fill="#1e1b4b">Analog Control Loop — Signal Chain</text>
+  <text x="490" y="58" text-anchor="middle" font-size="13" fill="#6b7280">Each block is the physical twin of a digital operation in the Verilog controller</text>
+  <rect x="30" y="110" width="130" height="70" rx="10" fill="url(#block)" stroke="#7c3aed" stroke-width="2"/>
+  <text x="95" y="140" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1b4b">Reference</text>
+  <text x="95" y="160" text-anchor="middle" font-size="12" fill="#6b7280">v_ref = 0.5 V</text>
+  <rect x="220" y="110" width="150" height="70" rx="10" fill="url(#block)" stroke="#7c3aed" stroke-width="2"/>
+  <text x="295" y="135" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1b4b">Error Amplifier</text>
+  <text x="295" y="153" text-anchor="middle" font-size="11" fill="#6b7280">A·(v_ref − v_fb)</text>
+  <text x="295" y="169" text-anchor="middle" font-size="11" fill="#6b7280">twin of: error = v_ref−v_out</text>
+  <rect x="430" y="110" width="150" height="70" rx="10" fill="url(#block)" stroke="#7c3aed" stroke-width="2"/>
+  <text x="505" y="135" text-anchor="middle" font-size="14" font-weight="600" fill="#1e1b4b">Comparator</text>
+  <text x="505" y="153" text-anchor="middle" font-size="11" fill="#6b7280">ramp &lt; ctrl ? on : off</text>
+  <text x="505" y="169" text-anchor="middle" font-size="11" fill="#6b7280">twin of: counter &lt; duty</text>
+  <rect x="640" y="110" width="150" height="70" rx="10" fill="url(#power)" stroke="#ea580c" stroke-width="2"/>
+  <text x="715" y="135" text-anchor="middle" font-size="14" font-weight="600" fill="#7c2d12">Power Stage</text>
+  <text x="715" y="153" text-anchor="middle" font-size="11" fill="#9a3412">switches + L-C filter</text>
+  <text x="715" y="169" text-anchor="middle" font-size="11" fill="#9a3412">V_out = D · V_in</text>
+  <rect x="850" y="110" width="100" height="70" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+  <text x="900" y="140" text-anchor="middle" font-size="14" font-weight="600" fill="#064e3b">V_out</text>
+  <text x="900" y="160" text-anchor="middle" font-size="12" fill="#047857">3.3 V</text>
+  <rect x="430" y="270" width="150" height="60" rx="10" fill="url(#block)" stroke="#7c3aed" stroke-width="2"/>
+  <text x="505" y="296" text-anchor="middle" font-size="13" font-weight="600" fill="#1e1b4b">Ramp Generator</text>
+  <text x="505" y="314" text-anchor="middle" font-size="11" fill="#6b7280">twin of: counter 0→255</text>
+  <line x1="160" y1="145" x2="214" y2="145" stroke="#5b21b6" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="370" y1="145" x2="424" y2="145" stroke="#5b21b6" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="397" y="137" text-anchor="middle" font-size="10" fill="#6b7280">ctrl</text>
+  <line x1="580" y1="145" x2="634" y2="145" stroke="#5b21b6" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="607" y="137" text-anchor="middle" font-size="10" fill="#6b7280">PWM</text>
+  <line x1="790" y1="145" x2="844" y2="145" stroke="#5b21b6" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="505" y1="270" x2="505" y2="184" stroke="#5b21b6" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="525" y="230" text-anchor="middle" font-size="10" fill="#6b7280">ramp</text>
+  <line x1="900" y1="180" x2="900" y2="380" stroke="#5b21b6" stroke-width="2"/>
+  <line x1="900" y1="380" x2="295" y2="380" stroke="#5b21b6" stroke-width="2"/>
+  <line x1="295" y1="380" x2="295" y2="184" stroke="#5b21b6" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="540" y="362" width="180" height="36" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="630" y="385" text-anchor="middle" font-size="11" fill="#475569">Feedback divider (V_out ÷ 6.6 → v_fb)</text>
+  <text x="450" y="375" text-anchor="middle" font-size="10" fill="#6b7280">v_fb</text>
+</svg>

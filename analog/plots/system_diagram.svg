@@ -1,0 +1,66 @@
+<svg viewBox="0 0 1100 640" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#475569"/></marker>
+    <marker id="arD" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#1d4ed8"/></marker>
+    <marker id="arA" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L8,3 L0,6 Z" fill="#7c3aed"/></marker>
+    <linearGradient id="dig" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eff6ff"/><stop offset="1" stop-color="#dbeafe"/></linearGradient>
+    <linearGradient id="ana" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#faf5ff"/><stop offset="1" stop-color="#f3e8ff"/></linearGradient>
+    <linearGradient id="pwr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff7ed"/><stop offset="1" stop-color="#ffedd5"/></linearGradient>
+  </defs>
+  <rect x="0" y="0" width="1100" height="640" fill="#ffffff"/>
+  <text x="550" y="34" text-anchor="middle" font-size="21" font-weight="700" fill="#0f172a">Digitally-Controlled Buck Converter with Custom Analog Control IC Blocks</text>
+  <text x="550" y="56" text-anchor="middle" font-size="13" fill="#64748b">The same control loop, built two ways — and they agree (duty 0.276 to 0.367 under a 12V to 9V sag)</text>
+  <rect x="30" y="80" width="320" height="380" rx="14" fill="#f8fafc" stroke="#1d4ed8" stroke-width="2"/>
+  <text x="190" y="108" text-anchor="middle" font-size="16" font-weight="700" fill="#1d4ed8">DIGITAL HALF — Verilog</text>
+  <text x="190" y="126" text-anchor="middle" font-size="11" fill="#64748b">iverilog + GTKWave - rtl/</text>
+  <rect x="70" y="150" width="240" height="52" rx="8" fill="url(#dig)" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="190" y="172" text-anchor="middle" font-size="13" font-weight="600" fill="#1e3a8a">PI Controller</text>
+  <text x="190" y="190" text-anchor="middle" font-size="11" fill="#475569">error = v_ref - v_out</text>
+  <rect x="70" y="230" width="240" height="52" rx="8" fill="url(#dig)" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="190" y="252" text-anchor="middle" font-size="13" font-weight="600" fill="#1e3a8a">PWM Generator</text>
+  <text x="190" y="270" text-anchor="middle" font-size="11" fill="#475569">counter 0-255 ; counter &lt; duty</text>
+  <rect x="70" y="310" width="240" height="52" rx="8" fill="url(#dig)" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="190" y="332" text-anchor="middle" font-size="13" font-weight="600" fill="#1e3a8a">Buck Model (behavioral)</text>
+  <text x="190" y="350" text-anchor="middle" font-size="11" fill="#475569">v_out chases (duty*v_in)/256</text>
+  <line x1="190" y1="202" x2="190" y2="228" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arD)"/>
+  <line x1="190" y1="282" x2="190" y2="308" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arD)"/>
+  <path d="M70,336 H45 V176 H68" fill="none" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arD)"/>
+  <text x="38" y="256" text-anchor="middle" font-size="10" fill="#1d4ed8" transform="rotate(-90 38 256)">feedback v_out</text>
+  <rect x="750" y="80" width="320" height="380" rx="14" fill="#f8fafc" stroke="#7c3aed" stroke-width="2"/>
+  <text x="910" y="108" text-anchor="middle" font-size="16" font-weight="700" fill="#7c3aed">ANALOG HALF — SPICE</text>
+  <text x="910" y="126" text-anchor="middle" font-size="11" fill="#64748b">ngspice + Python - analog/</text>
+  <rect x="790" y="150" width="240" height="52" rx="8" fill="url(#ana)" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="910" y="172" text-anchor="middle" font-size="13" font-weight="600" fill="#5b21b6">Error Amplifier (OTA)</text>
+  <text x="910" y="190" text-anchor="middle" font-size="11" fill="#475569">A*(v_ref - v_fb)</text>
+  <rect x="790" y="230" width="240" height="52" rx="8" fill="url(#ana)" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="910" y="252" text-anchor="middle" font-size="13" font-weight="600" fill="#5b21b6">Comparator</text>
+  <text x="910" y="270" text-anchor="middle" font-size="11" fill="#475569">ramp &lt; ctrl ? on : off</text>
+  <rect x="790" y="310" width="240" height="52" rx="8" fill="url(#ana)" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="910" y="332" text-anchor="middle" font-size="13" font-weight="600" fill="#5b21b6">Ramp Generator</text>
+  <text x="910" y="350" text-anchor="middle" font-size="11" fill="#475569">current into capacitor to sawtooth</text>
+  <line x1="910" y1="202" x2="910" y2="228" stroke="#7c3aed" stroke-width="2" marker-end="url(#arA)"/>
+  <text x="952" y="220" text-anchor="middle" font-size="10" fill="#7c3aed">ctrl</text>
+  <line x1="910" y1="310" x2="910" y2="286" stroke="#7c3aed" stroke-width="2" marker-end="url(#arA)"/>
+  <text x="950" y="300" text-anchor="middle" font-size="10" fill="#7c3aed">ramp</text>
+  <rect x="410" y="230" width="280" height="130" rx="14" fill="url(#pwr)" stroke="#ea580c" stroke-width="2.5"/>
+  <text x="550" y="262" text-anchor="middle" font-size="15" font-weight="700" fill="#7c2d12">SHARED BUCK POWER STAGE</text>
+  <text x="550" y="286" text-anchor="middle" font-size="12" fill="#9a3412">switches + L (10uH) + C (100uF)</text>
+  <text x="550" y="308" text-anchor="middle" font-size="13" font-weight="600" fill="#7c2d12">V_out = D * V_in</text>
+  <text x="550" y="330" text-anchor="middle" font-size="12" fill="#9a3412">12 V in to 3.3 V out</text>
+  <text x="550" y="350" text-anchor="middle" font-size="11" fill="#c2410c">D = 3.3/12 = 0.275</text>
+  <line x1="310" y1="256" x2="408" y2="270" stroke="#1d4ed8" stroke-width="2" marker-end="url(#arD)"/>
+  <text x="360" y="252" text-anchor="middle" font-size="10" fill="#1d4ed8">PWM</text>
+  <line x1="790" y1="256" x2="692" y2="270" stroke="#7c3aed" stroke-width="2" marker-end="url(#arA)"/>
+  <text x="742" y="252" text-anchor="middle" font-size="10" fill="#7c3aed">PWM</text>
+  <rect x="30" y="490" width="1040" height="130" rx="12" fill="#fafafa" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="550" y="514" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">Each digital operation has a physical analog twin</text>
+  <text x="190" y="544" text-anchor="middle" font-size="12" fill="#1d4ed8" font-weight="600">counter 0-255</text>
+  <text x="550" y="544" text-anchor="middle" font-size="14" fill="#94a3b8">&lt;-&gt;</text>
+  <text x="910" y="544" text-anchor="middle" font-size="12" fill="#7c3aed" font-weight="600">ramp (current+capacitor)</text>
+  <text x="190" y="570" text-anchor="middle" font-size="12" fill="#1d4ed8" font-weight="600">counter &lt; duty</text>
+  <text x="550" y="570" text-anchor="middle" font-size="14" fill="#94a3b8">&lt;-&gt;</text>
+  <text x="910" y="570" text-anchor="middle" font-size="12" fill="#7c3aed" font-weight="600">comparator</text>
+  <text x="190" y="596" text-anchor="middle" font-size="12" fill="#1d4ed8" font-weight="600">error = v_ref - v_out</text>
+  <text x="550" y="596" text-anchor="middle" font-size="14" fill="#94a3b8">&lt;-&gt;</text>
+  <text x="910" y="596" text-anchor="middle" font-size="12" fill="#7c3aed" font-weight="600">error amplifier</text>
+</svg>

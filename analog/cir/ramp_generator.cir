@@ -1,0 +1,21 @@
+* Sawtooth / ramp generator
+* Constant current charges C; a switch periodically resets it.
+* Target: 0 -> ~1V ramp at 500kHz (2us period)
+.param fsw=500k
+.param Tsw={1/fsw}
+* Constant charging current source: 0.5mA into the ramp node
+Iramp 0 ramp DC 0.5m
+* Ramp capacitor: I*t/C => with 0.5mA, 1nF, 2us => ~1.0V swing
+Cramp ramp 0 1n IC=0
+* Reset switch across the cap: closes briefly each period to discharge
+Vreset rstn 0 PULSE(0 1 {Tsw-50n} 1n 1n 50n {Tsw})
+Sreset ramp 0 rstn 0 RSWmod
+.model RSWmod SW(Ron=1 Roff=1Meg Vt=0.5 Vh=0)
+.tran 5n 10u uic
+.control
+run
+meas tran ramp_max MAX v(ramp) from=2u to=10u
+meas tran ramp_min MIN v(ramp) from=2u to=10u
+wrdata ramp_out.txt v(ramp)
+.endc
+.end

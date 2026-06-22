@@ -1,0 +1,55 @@
+* Closed-loop analog buck: ramp + comparator + error amp + power stage
+* Smoothed switching edges for SPICE convergence.
+
+.param fsw=500k
+.param Tsw={1/fsw}
+.param Vin=12
+.param Vref=0.5
+.param Again=80
+
+Vsrc in 0 DC {Vin}
+
+* --- Ramp generator ---
+Iramp 0 ramp DC 0.5m
+Cramp ramp 0 1n IC=0
+Vreset rstn 0 PULSE(0 1 {Tsw-50n} 1n 1n 50n {Tsw})
+Sreset ramp 0 rstn 0 RSWmod
+.model RSWmod SW(Ron=1 Roff=1Meg Vt=0.5 Vh=0)
+
+* --- Reference ---
+Vrefsrc vref 0 DC {Vref}
+
+* --- Feedback divider: vfb = Vout/6.6 ---
+Rfb1 out vfb 5.6k
+Rfb2 vfb 0 1k
+
+* --- Error amplifier ---
+Bea ctrl 0 V = max( 0, min( 1, {Again}*(v(vref) - v(vfb)) ) )
+
+* --- Comparator with smoothed edge (tanh): ~0..1 output ---
+* steepness 200 => fast but finite transition, helps convergence
+Bpwm pwm 0 V = 0.5*(1 + tanh(200*(v(ctrl) - v(ramp))))
+
+* --- Gate drives derived from smoothed pwm ---
+Bghi ghi 0 V = v(pwm)
+Bglo glo 0 V = 1 - v(pwm)
+
+Shi in sw ghi 0 SWmod
+Slo sw 0 glo 0 SWmod
+.model SWmod SW(Ron=10m Roff=1Meg Vt=0.5 Vh=0.1)
+
+* --- Power stage ---
+L1 sw out 10u
+Resr out outc 10m
+C1 outc 0 100u
+Rload out 0 3.3
+
+.tran 20n 2m uic
+
+.control
+run
+meas tran vout_final AVG v(out) from=1.8m to=2m
+wrdata closed_out.txt v(out) v(ctrl)
+.endc
+
+.end

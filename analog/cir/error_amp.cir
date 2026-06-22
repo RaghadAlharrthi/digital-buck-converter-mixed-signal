@@ -1,0 +1,21 @@
+* Error amplifier (behavioral OTA)
+* out = clamp[ A*(v_ref - v_fb) ] into 0..1V using min/max
+* Mirrors: error = v_ref - v_out  (then gain)
+
+.param Again=100
+.param Vref=0.5
+
+Vrefsrc vref 0 DC {Vref}
+Vfb vfb 0 DC 0.5
+
+* raw = A*(vref - vfb); then clamp: max(0, min(1, raw))
+Bea ea 0 V = max( 0, min( 1, {Again}*(v(vref) - v(vfb)) ) )
+
+.dc Vfb 0.4 0.6 0.002
+
+.control
+run
+wrdata ea_sweep.txt v(ea)
+.endc
+
+.end

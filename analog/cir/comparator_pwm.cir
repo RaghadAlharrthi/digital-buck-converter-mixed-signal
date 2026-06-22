@@ -1,0 +1,26 @@
+* Ramp + comparator => analog PWM
+* Comparator output HIGH while ramp < control voltage (mirrors counter<duty)
+
+.param fsw=500k
+.param Tsw={1/fsw}
+.param Vctrl=0.275
+
+Iramp 0 ramp DC 0.5m
+Cramp ramp 0 1n IC=0
+Vreset rstn 0 PULSE(0 1 {Tsw-50n} 1n 1n 50n {Tsw})
+Sreset ramp 0 rstn 0 RSWmod
+.model RSWmod SW(Ron=1 Roff=1Meg Vt=0.5 Vh=0)
+
+Vc ctrl 0 DC {Vctrl}
+
+Bpwm pwm 0 V = (v(ramp) < v(ctrl)) ? 1 : 0
+
+.tran 5n 10u uic
+
+.control
+run
+meas tran duty_meas AVG v(pwm) from=2u to=10u
+wrdata pwm_out.txt v(ramp) v(ctrl) v(pwm)
+.endc
+
+.end
