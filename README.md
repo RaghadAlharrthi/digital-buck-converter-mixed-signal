@@ -82,20 +82,17 @@ The behavioral error amplifier was also built at transistor level: a classic 5-t
 
 ![Transistor-level OTA transfer curve](analog/plots/ota_plot.png)
 
+
 ## SKY130 foundry implementation
 
-The error amplifier was also implemented in the SkyWater SKY130 130nm process using real foundry transistor models (sky130_fd_pr nfet_01v8 / pfet_01v8), simulated in ngspice via the open-source SKY130 PDK and Xschem flow. The 5-transistor OTA (differential pair + PMOS mirror load + tail source) shows ~34x gain with correct negative-feedback direction (output falls as feedback rises), confirming the analog control block works in a real semiconductor process, not just behavioral models.
+The error amplifier was implemented in the SkyWater SKY130 130nm process using real foundry transistor models (sky130_fd_pr nfet_01v8 / pfet_01v8) through the open-source SKY130 PDK, ngspice, and Xschem.
 
-![SKY130 OTA transfer curve](analog/plots/sky130_ota_plot.png)
+It was built two ways that agree: first validated as a SPICE netlist, then drawn as a full transistor-level schematic in Xschem. The 5-transistor OTA (NMOS differential pair M1/M2, PMOS current-mirror load M3/M4, NMOS tail source M5; VDD=1.8V, vref/vfb=0.9V, bias=0.8V) was netlisted and simulated, giving ~33x gain with correct negative-feedback direction. This confirms the analog control block works as an actual drawn circuit in a real semiconductor process, not just behavioral models.
 
-## SKY130 OTA — hand-drawn schematic, simulated
+Hand-drawn schematic (Xschem + SKY130 PDK):
 
-The error amplifier was drawn as a full transistor-level schematic in Xschem using the SKY130 PDK: a 5-transistor OTA (NMOS differential pair M1/M2, PMOS current-mirror load M3/M4, NMOS tail source M5) with VDD=1.8V, vref/vfb=0.9V, bias=0.8V. The schematic was netlisted and simulated in ngspice with real foundry models, giving ~33x gain with correct negative-feedback direction. This confirms the analog control block works as an actual drawn circuit in a real 130nm process.
+![SKY130 OTA schematic](analog/plots/ota_schematic.png)
 
-Hand-drawn schematic:
-
-![SKY130 OTA schematic (Xschem)](analog/plots/ota_schematic.png)
-
-Simulated transfer curve from the schematic:
+Simulated transfer curve:
 
 ![SKY130 OTA transfer curve](analog/plots/schematic_ota_plot.png)
