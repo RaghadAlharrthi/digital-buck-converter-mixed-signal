@@ -81,3 +81,9 @@ The control-to-output transfer function Gvd(s) = Vin / (LC s^2 + (L/R)s + 1) was
 The behavioral error amplifier was also built at transistor level: a classic 5-transistor OTA (NMOS differential pair + PMOS current-mirror load + tail current source) using generic MOSFET models. Measured gain ~31x; output falls as feedback rises, giving the same negative-feedback direction as the behavioral block.
 
 ![Transistor-level OTA transfer curve](analog/plots/ota_plot.png)
+
+## SKY130 foundry implementation
+
+The error amplifier was also implemented in the SkyWater SKY130 130nm process using real foundry transistor models (sky130_fd_pr nfet_01v8 / pfet_01v8), simulated in ngspice via the open-source SKY130 PDK and Xschem flow. The 5-transistor OTA (differential pair + PMOS mirror load + tail source) shows ~34x gain with correct negative-feedback direction (output falls as feedback rises), confirming the analog control block works in a real semiconductor process, not just behavioral models.
+
+![SKY130 OTA transfer curve](analog/plots/sky130_ota_plot.png)
