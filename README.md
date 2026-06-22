@@ -1,43 +1,71 @@
-# Digital Buck Converter Controller (Verilog)
+# Digitally-Controlled Buck Converter with Custom Analog Control IC Blocks
 
-A closed-loop digital PWM-based controller for a buck converter, written in Verilog and verified with iverilog + GTKWave. The design regulates output voltage to a target and recovers from supply-voltage disturbances.
+A buck converter steps a high voltage down to a lower one (here 12 V to 3.3 V) by switching a transistor on and off and smoothing with an inductor and capacitor. The duty cycle D sets the output: V_out = D * V_in. The converter needs a controller to hold the output steady when input or load changes.
 
-## What it does
+This project builds that controller TWO WAYS:
+1. A DIGITAL controller in Verilog — see rtl/
+2. ANALOG control IC blocks in SPICE — see analog/
 
-A digital PI controller senses the converter's output voltage, compares it to a reference, and adjusts a duty-cycle command to hold the output steady, even when the input supply changes under it.
+Same converter, same 3.3 V target, same physics V_out = D * V_in — one from digital logic, one from analog circuits.
 
-## Architecture
+## Full system block diagram
 
-The loop: v_ref goes into the PI controller, which outputs a duty command to the buck model, which produces v_out. v_out is fed back to the PI controller, closing the loop.
+![Full system block diagram - both halves driving the shared buck power stage](analog/plots/system_diagram.svg)
 
-| Block | File | Role |
-|-------|------|------|
-| PWM generator | rtl/pwm_generator.v | Converts a duty value into an ON/OFF switching signal |
-| Buck model | rtl/buck_model.v | Behavioral L-C plant; output voltage chases duty x V_in |
-| PI controller | rtl/pi_controller.v | Computes duty from voltage error; integral term removes steady-state error |
-| Top level | rtl/buck_top.v | Closes the feedback loop |
+## The two halves at a glance
 
-## Verification results
+| | Digital (Verilog) | Analog (SPICE) |
+|---|---|---|
+| Tool | iverilog + GTKWave | ngspice + Python |
+| Ramp | counter 0-255 | current into capacitor |
+| Compare | counter < duty | comparator |
+| Error | error = v_ref - v_out | error amplifier |
+| Output | 3.3 V | 3.3 V |
 
-- Regulation: output settles to the 3300 mV (3.3 V) target, with the integral term eliminating steady-state error.
-- Disturbance rejection: when the supply sags from 12 V to 9 V mid-simulation, the controller raises duty from about 70 to about 94 and restores the output to 3.3 V, matching the hand prediction 3300/9000 x 256 = ~94.
+Each line of the digital controller has a physical analog twin: the counter becomes a ramp, the < becomes a comparator, the subtract becomes an error amplifier.
 
-## How to run
+## Digital half — Verilog controller
 
-Compile and run the closed-loop test:
+A digital PI controller senses the output, compares it to a reference, and adjusts duty to hold the output steady. Files: rtl/pi_controller.v, rtl/pwm_generator.v, rtl/buck_model.v, rtl/buck_top.v
 
-    iverilog -o sim/buck_top_sim rtl/buck_top.v rtl/pi_controller.v rtl/buck_model.v tb/buck_top_tb.v
-    vvp sim/buck_top_sim
-    gtkwave sim/buck_top.vcd
+Result: output settles to 3.3 V; when supply sags 12 V to 9 V, duty rises from ~70 to ~94 of 256, restoring 3.3 V.
 
-Individual blocks have their own testbenches in tb/.
+![Digital regulation and disturbance recovery](images/regulation.png)
+
+## Analog half — custom control IC blocks
+
+The same loop built as real analog circuits. Full detail in analog/README.md.
+
+![Analog control loop architecture](analog/plots/architecture.svg)
+
+- Ramp generator (twin of counter): current into a capacitor makes a sawtooth.
+- Comparator (twin of counter < duty): PWM HIGH while ramp < control.
+- Error amplifier (twin of error = v_ref - v_out): 10 mV swings full range; downward slope gives stable negative feedback.
+- Closed loop: with only a reference set, the loop finds its own duty and holds 3.277 V.
+
+![Analog closed-loop startup](analog/plots/closed_loop_plot.png)
+
+Soft-start cuts startup overshoot from 7.6 V to 3.286 V.
+
+![Soft-start](analog/plots/softstart_plot.png)
+
+## The punchline: both halves agree
+
+Same disturbance test (12 V to 9 V) in both designs:
+
+| | Digital | Analog |
+|---|---|---|
+| Duty before | ~70/256 = 0.273 | 0.276 |
+| Duty after | ~94/256 = 0.367 | 0.367 |
+| Output | 3.3 V | 3.3 V |
+
+Both reached the SAME duty (0.367 = 3.3/9) because both obey V_out = D * V_in. Digital did it with integer math; analog did it with an error amplifier and comparator. Same physics, different mechanisms.
+
+![Analog disturbance rejection](analog/plots/disturbance_plot.png)
+
+## Project layout
+
+rtl/ Verilog design. tb/ testbenches. sim/ vcd output. images/ digital waveform. analog/ SPICE blocks. README.md original digital readme. PROJECT_README.md this file.
 
 ## Tools
-
-iverilog (simulation), GTKWave (waveform viewing), Verilog-2001.
-
-## Waveform
-
-![Closed-loop regulation and disturbance recovery](images/regulation.png)
-
-The controller holds v_out at the 3.3 V target, rejects a 12 V to 9 V supply disturbance, and raises duty from ~70 to ~94 to restore regulation.
+Digital: iverilog, GTKWave, Verilog-2001. Analog: ngspice 45.2, Python (numpy, matplotlib).
