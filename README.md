@@ -96,3 +96,9 @@ Hand-drawn schematic (Xschem + SKY130 PDK):
 Simulated transfer curve:
 
 ![SKY130 OTA transfer curve](analog/plots/schematic_ota_plot.png)
+
+## SKY130 OTA — hand-drawn schematic, simulated
+
+The error amplifier was also drawn as a full transistor-level schematic in Xschem using the SKY130 PDK: a 5-transistor OTA (NMOS differential pair M1/M2, PMOS current-mirror load M3/M4, NMOS tail source M5) with VDD=1.8V, vref/vfb=0.9V, and a bias of 0.8V. The schematic was netlisted and simulated in ngspice with real foundry models, giving ~33x gain and correct negative-feedback direction. This confirms the analog control block works as an actual drawn circuit in a real 130nm process, not just as a netlist.
+
+![SKY130 OTA transfer curve from schematic](analog/plots/schematic_ota_plot.png)
