@@ -146,7 +146,7 @@ Same disturbance test (12 V → 9 V) in both designs:
 
 | | Digital | Analog |
 |---|---|---|
-| Duty before | ~70/256 = 0.273 | 0.276 |
+| Duty before | ~70/256 = 0.273 | 0.273 |
 | Duty after | ~94/256 = 0.367 | 0.367 |
 | Output | 3.3 V | 3.3 V |
 
@@ -179,7 +179,7 @@ IC design: SKY130 PDK, Xschem.
 
 ```bash
 # Digital
-iverilog -o sim/buck tb/buck_top_tb.v rtl/*.v && vvp sim/buck
+iverilog -o buck tb/buck_top_tb.v rtl/*.v && vvp buck
 
 # Analog (example: closed loop)
 ngspice -b analog/cir/closed_loop.cir
