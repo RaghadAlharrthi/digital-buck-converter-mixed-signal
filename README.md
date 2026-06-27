@@ -37,7 +37,7 @@ H(z) = Kp + Ki / (1 − z⁻¹)
 
 where `1/(1 − z⁻¹)` is the discrete integrator (the pole at z = 1 that guarantees zero steady-state error).
 
-![Full system block diagram](analog/plots/system_diagram.svg)
+![Full system block diagram](analog/plots/analog_digital.jpg)
 
 *Both halves drive the same shared buck power stage. Every digital operation has a physical analog twin.*
 
@@ -61,7 +61,7 @@ The gains are implemented as bit-shifts (no multiplier needed): `Kp = 1/16` (shi
 
 The same loop, built as real analog circuits in SPICE. Full detail in [`analog/README.md`](analog/README.md).
 
-![Analog control loop architecture](analog/plots/architecture.svg)
+![Analog control loop architecture](analog/plots/analog_chain.jpg)
 
 The three custom blocks, each the physical twin of a digital operation:
 
