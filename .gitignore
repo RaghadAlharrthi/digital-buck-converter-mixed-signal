@@ -3,3 +3,4 @@ sim/*_check
 sim/*.vcd
 __pycache__/
 *.pyc
+buck
