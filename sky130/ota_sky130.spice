@@ -1,6 +1,7 @@
 * 5-transistor OTA in SKY130 (real foundry models)
 * Differential pair (M1,M2) + PMOS mirror load (M3,M4) + tail (M5)
 
+* NOTE: edit this path to your local SKY130 PDK (volare) install
 .lib /home/raghad/.volare/sky130A/libs.tech/combined/sky130.lib.spice tt
 
 .param VDD=1.8
