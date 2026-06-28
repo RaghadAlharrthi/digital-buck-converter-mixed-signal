@@ -1,8 +1,8 @@
 # Digitally-Controlled Buck Converter with Custom Analog Control IC Blocks
 
-A 12 V → 3.3 V buck converter controller, designed **two independent ways** — a digital PI controller in Verilog and a custom analog control loop in SPICE — and shown to produce the same result. The one block whose function is fundamentally analog gain, the error amplifier, is taken all the way down to a **5-transistor OTA in the SkyWater SKY130 130 nm process**.
+A 12 V → 3.3 V buck converter controller, designed **two independent ways**  a digital PI controller in Verilog and a custom analog control loop in SPICE and shown to produce the same result. The one block whose function is fundamentally analog gain, the error amplifier, is taken all the way down to a **5-transistor OTA in the SkyWater SKY130 130 nm process**.
 
-**What this demonstrates:** digital RTL design, analog control-loop design, mixed-signal reasoning, frequency-domain analysis, and transistor-level IC design in a real foundry PDK — verified end to end in simulation.
+**What this demonstrates:** digital RTL design, analog control-loop design, mixed signal reasoning, frequency domain analysis, and transistor level IC design in a real foundry PDK verified end to end in simulation.
 
 | | Digital half | Analog half |
 |---|---|---|
@@ -53,11 +53,11 @@ The gains are implemented as bit-shifts (no multiplier needed): `Kp = 1/16` (shi
 
 ![Digital regulation and disturbance recovery](images/regulation.png)
 
-**What this shows:** Top — output voltage (blue) locks onto the 3.3 V target (green dashed). Bottom — the duty cycle the controller chooses. The output regulates to 3.3 V; when the supply sags from 12 V to 9 V, the controller raises duty from ~70 to ~94 (out of 256) to restore 3.3 V, because lower input voltage needs more duty to hold the same output (3.3/9 ≈ 0.367 × 256 ≈ 94).
+**What this shows:** Top output voltage (blue) locks onto the 3.3 V target (green dashed). Bottom the duty cycle the controller chooses. The output regulates to 3.3 V; when the supply sags from 12 V to 9 V, the controller raises duty from ~70 to ~94 (out of 256) to restore 3.3 V, because lower input voltage needs more duty to hold the same output (3.3/9 ≈ 0.367 × 256 ≈ 94).
 
 ---
 
-## 3. Analog half — custom control IC blocks
+## 3. Analog half custom control IC blocks
 
 The same loop, built as real analog circuits in SPICE. Full detail in [`analog/README.md`](analog/README.md).
 
@@ -65,9 +65,9 @@ The same loop, built as real analog circuits in SPICE. Full detail in [`analog/R
 
 The three custom blocks, each the physical twin of a digital operation:
 
-- **Ramp generator** (twin of the counter): a constant current charging a capacitor produces a linear sawtooth. From `I = C·dV/dt`, constant current gives constant `dV/dt`, so the voltage rises in a straight line — `V_ramp = (I/C)·t`.
+- **Ramp generator** (twin of the counter): a constant current charging a capacitor produces a linear sawtooth. From `I = C·dV/dt`, constant current gives constant `dV/dt`, so the voltage rises in a straight line `V_ramp = (I/C)·t`.
 - **Comparator** (twin of `counter < duty`): output is HIGH while `ramp < control`. Where the control voltage sits on the ramp sets the duty.
-- **Error amplifier** (twin of `error = v_ref − v_out`): a high-gain stage whose output rises and falls to command the duty. A downward transfer slope gives the negative feedback the loop needs to be stable.
+- **Error amplifier** (twin of `error = v_ref − v_out`): a high gain stage whose output rises and falls to command the duty. A downward transfer slope gives the negative feedback the loop needs to be stable.
 
 ![Analog closed-loop startup](analog/plots/closed_loop_plot.png)
 
@@ -83,7 +83,7 @@ The three custom blocks, each the physical twin of a digital operation:
 
 ![Analog disturbance rejection](analog/plots/disturbance_plot.png)
 
-**What this shows:** Top — the input supply is stepped from 12 V down to 9 V at t = 1 ms. Bottom — the output stays regulated at 3.3 V through the disturbance. The loop raises its duty to compensate, exactly as the digital half does.
+**What this shows:** Top  the input supply is stepped from 12 V down to 9 V at t = 1 ms. Bottom the output stays regulated at 3.3 V through the disturbance. The loop raises its duty to compensate, exactly as the digital half does.
 
 ---
 
@@ -95,11 +95,11 @@ The buck control-to-output transfer function
 Gvd(s) = V_in / (LC·s² + (L/R)·s + 1)
 ```
 
-was computed in Python (`analog/py/bode_plot.py`). It is second-order because the circuit has two energy stores (L and C), which gives a resonance.
+was computed in Python (`analog/py/bode_plot.py`). It is second order because the circuit has two energy stores (L and C), which gives a resonance.
 
 ![Bode plot of Gvd(s)](analog/plots/bode_plot.png)
 
-**What this shows:** Top — the gain has a sharp resonant peak at f₀ = 5033 Hz, then rolls off at −40 dB/decade (two poles). Bottom — the phase drops steeply through the resonance. The resonant frequency and quality factor are
+**What this shows:** Top the gain has a sharp resonant peak at f₀ = 5033 Hz, then rolls off at −40 dB/decade (two poles). Bottom the phase drops steeply through the resonance. The resonant frequency and quality factor are
 
 ```
 f₀ = 1 / (2π·√(LC)) ≈ 5033 Hz
@@ -112,7 +112,7 @@ The high Q (≈ 10.4) means the LC is lightly damped, which is precisely why the
 
 ## 5. Transistor-level error amplifier
 
-Of all the blocks in the loop, the error amplifier is the only one whose entire function is **analog gain** — so it is the one block taken down to the transistor level. The ramp (current source + capacitor) and comparator (a diff pair driven to saturation) involve no new analog-gain design once the OTA is built, and the power stage is passive/switching, so those remain behavioral by design.
+Of all the blocks in the loop, the error amplifier is the only one whose entire function is **analog gain** so it is the one block taken down to the transistor level. The ramp (current source + capacitor) and comparator (a diff pair driven to saturation) involve no new analog-gain design once the OTA is built, and the power stage is passive/switching, so those remain behavioral by design.
 
 The amplifier is a classic **5-transistor OTA**: an NMOS differential pair (M1, M2) senses the error, a PMOS current-mirror load (M3, M4) converts the steered current into an output voltage, and an NMOS tail source (M5) sets the bias current. Its DC gain is
 
@@ -120,7 +120,7 @@ The amplifier is a classic **5-transistor OTA**: an NMOS differential pair (M1, 
 A = gm · rout
 ```
 
-— the input pair's transconductance `gm` (volts in → current) times the output resistance `rout` (current → volts out). That product is the amplification.
+the input pair's transconductance `gm` (volts in → current) times the output resistance `rout` (current → volts out). That product is the amplification.
 
 ### Generic MOSFET models
 
@@ -136,7 +136,7 @@ The same amplifier was implemented in the SkyWater SKY130 130 nm process using r
 
 ![SKY130 OTA transfer curve](analog/plots/schematic_ota_plot.png)
 
-**What this shows:** The same steep downward transfer curve, now in a real 130 nm process — ~33× gain with correct negative-feedback direction. The voltages are smaller than the generic version because SKY130 is a low-voltage 1.8 V process. This confirms the analog control block works as an actual drawn circuit in a real semiconductor process, not only as a behavioral model.
+**What this shows:** The same steep downward transfer curve, now in a real 130 nm process  ~33× gain with correct negative feedback direction. The voltages are smaller than the generic version because SKY130 is a low-voltage 1.8 V process. This confirms the analog control block works as an actual drawn circuit in a real semiconductor process, not only as a behavioral model.
 
 ---
 
